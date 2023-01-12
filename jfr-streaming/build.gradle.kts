@@ -23,3 +23,27 @@ tasks {
     useJUnitPlatform()
   }
 }
+
+testing {
+  suites {
+    val testShenandoah by registering(JvmTestSuite::class) {
+      dependencies {
+        implementation("io.opentelemetry:opentelemetry-sdk-testing")
+      }
+
+      targets {
+        all {
+          testTask {
+            jvmArgs = listOf("-XX:+UnlockExperimentalVMOptions", "-XX:+UseShenandoahGC")
+          }
+        }
+      }
+    }
+  }
+}
+
+tasks {
+  check {
+    dependsOn(testing.suites)
+  }
+}
