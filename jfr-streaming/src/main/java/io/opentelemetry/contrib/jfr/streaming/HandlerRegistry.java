@@ -13,6 +13,7 @@ import io.opentelemetry.contrib.jfr.streaming.internal.GarbageCollection.YoungGa
 import io.opentelemetry.contrib.jfr.streaming.internal.RecordedEventHandler;
 import io.opentelemetry.contrib.jfr.streaming.internal.ThreadGrouper;
 import io.opentelemetry.contrib.jfr.streaming.internal.buffer.DirectBufferStatisticsHandler;
+import io.opentelemetry.contrib.jfr.streaming.internal.classes.ClassLoadHandler;
 import io.opentelemetry.contrib.jfr.streaming.internal.classes.ClassesLoadedHandler;
 import io.opentelemetry.contrib.jfr.streaming.internal.container.ContainerConfigurationHandler;
 import io.opentelemetry.contrib.jfr.streaming.internal.cpu.ContextSwitchRateHandler;
@@ -92,6 +93,7 @@ final class HandlerRegistry {
             new LongLockHandler(meter, grouper),
             new ThreadCountHandler(meter),
             new ClassesLoadedHandler(meter),
+            new ClassLoadHandler(),
             new MetaspaceSummaryHandler(meter),
             new CodeCacheConfigurationHandler(meter),
             new DirectBufferStatisticsHandler(meter));

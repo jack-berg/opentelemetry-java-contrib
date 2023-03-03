@@ -17,6 +17,7 @@ dependencies {
   testImplementation(testFixtures(project))
 
   testImplementation("io.opentelemetry:opentelemetry-sdk-testing")
+  testImplementation("com.google.guava:guava:30.0.1-jre")
 
   testFixturesImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
   testFixturesImplementation("io.opentelemetry:opentelemetry-api")
