@@ -14,8 +14,8 @@ public final class TestData {
   public static final long MAX_FILE_AGE_FOR_WRITE_MILLIS = 1000;
   public static final long MIN_FILE_AGE_FOR_READ_MILLIS = MAX_FILE_AGE_FOR_WRITE_MILLIS + 500;
   public static final long MAX_FILE_AGE_FOR_READ_MILLIS = 10_000;
-  public static final int MAX_FILE_SIZE = 100;
-  public static final int MAX_FOLDER_SIZE = 300;
+  public static final int MAX_FILE_SIZE = 10000;
+  public static final int MAX_FOLDER_SIZE = 30000;
 
   public static StorageConfiguration getDefaultConfiguration() {
     return getConfiguration(DefaultTemporaryFileProvider.INSTANCE);

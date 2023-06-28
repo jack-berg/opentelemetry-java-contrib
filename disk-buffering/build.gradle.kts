@@ -32,4 +32,10 @@ dependencies {
   annotationProcessor("com.dslplatform:dsl-json-java8:$dslJsonVersion")
   annotationProcessor("org.mapstruct:mapstruct-processor:$mapStructVersion")
   testImplementation("org.mockito:mockito-inline:4.11.0")
+
+  implementation("io.opentelemetry:opentelemetry-exporter-otlp-common")
+  implementation("io.opentelemetry.proto:opentelemetry-proto:0.20.0-alpha")
+  implementation("com.google.protobuf:protobuf-java-util")
+  implementation("com.fasterxml.jackson.core:jackson-core")
+  implementation("io.opentelemetry:opentelemetry-sdk-testing")
 }
