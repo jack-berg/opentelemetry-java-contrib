@@ -22,6 +22,7 @@ public class TracerProviderCustomizer implements AutoConfigurationCustomizerProv
             unsetSpanProcessors(sdkTracerProviderBuilder);
             sdkTracerProviderBuilder.addSpanProcessor(
                 LocalTraceBatchProcessor.create(
+                    unused -> true,
                     new OtlpSpanExporterProvider().createExporter(configProperties)));
           }
           return sdkTracerProviderBuilder;

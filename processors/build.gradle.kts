@@ -9,8 +9,13 @@ otelJava.moduleName.set("io.opentelemetry.contrib.processor")
 
 dependencies {
   compileOnly("io.opentelemetry:opentelemetry-sdk")
+
+  // Autoconfigure
   compileOnly("io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi")
   compileOnly("io.opentelemetry:opentelemetry-exporter-otlp")
+
+  compileOnly("com.google.auto.value:auto-value-annotations")
+  annotationProcessor("com.google.auto.value:auto-value")
 
   testImplementation("io.opentelemetry:opentelemetry-sdk-testing")
 }

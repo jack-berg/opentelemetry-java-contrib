@@ -9,6 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanContext;
+import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.api.trace.TraceFlags;
 import io.opentelemetry.api.trace.TraceState;
 import io.opentelemetry.api.trace.Tracer;
@@ -46,13 +47,13 @@ class LocalTraceBatchProcessorTest {
         SdkTracerProvider.builder()
             .setClock(clock)
             .setSampler(Sampler.alwaysOn())
-            .addSpanProcessor(LocalTraceBatchProcessor.create(exporter))
+            .addSpanProcessor(LocalTraceBatchProcessor.create(unused -> true, exporter))
             .build();
     tracer = tracerProvider.get("test-tracer");
   }
 
   @Test
-  void syncCase() {
+  void syncCase_noFilter() {
     Span a = tracer.spanBuilder("a").startSpan();
     try (Scope scopeA = a.makeCurrent()) {
       doWork(10);
@@ -101,7 +102,7 @@ class LocalTraceBatchProcessorTest {
   }
 
   @Test
-  void asyncCase() {
+  void asyncCase_noFilter() {
     ExecutorService executorService = Context.taskWrapping(Executors.newSingleThreadExecutor());
     List<Future<?>> futures = new ArrayList<>();
 
@@ -174,8 +175,42 @@ class LocalTraceBatchProcessorTest {
       }
     }
 
-    // Span should be dropped by processor since we never
+    // Span should be dropped by processor
     assertThat(exporter.getSpanBatchesAndReset()).isEmpty();
+  }
+
+  @Test
+  void withFilter() {
+    SdkTracerProvider tracerProvider =
+        SdkTracerProvider.builder()
+            .setClock(clock)
+            .setSampler(Sampler.alwaysOn())
+            .addSpanProcessor(
+                LocalTraceBatchProcessor.create(
+                    LocalTraceFilter.rootSpanStatus(StatusCode.ERROR), exporter))
+            .build();
+    tracer = tracerProvider.get("test-tracer");
+
+    Span a = tracer.spanBuilder("a").startSpan();
+    try (Scope scopeA = a.makeCurrent()) {
+      doWork(10);
+
+      a.end();
+    }
+
+    Span b = tracer.spanBuilder("b").startSpan();
+    try (Scope scopeB = b.makeCurrent()) {
+      doWork(10);
+
+      b.setStatus(StatusCode.ERROR);
+      b.end();
+    }
+
+    assertThat(exporter.getSpanBatchesAndReset())
+        .satisfiesExactlyInAnyOrder(
+            spanBatch ->
+                assertThat(spanBatch)
+                    .satisfiesExactlyInAnyOrder(span -> assertThat(span.getName()).isEqualTo("b")));
   }
 
   private static void awaitAllFutures(List<Future<?>> futures) {
