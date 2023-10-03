@@ -1,1 +1,2 @@
 io.opentelemetry.contrib.sampler.LinksParentAlwaysOnSamplerProvider
+io.opentelemetry.contrib.sampler.RuleBasedRoutingSamplerProvider
